@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- Конфигурация подключения для рабочей БД mariaDB -->
+    <bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig" lazy-init="true">
+        <property name="username" value="xchanger"/>
+        <property name="password" value="`/IAng|QInn/j^~BMyjs"/>
+        <property name="jdbcUrl" value="jdbc:mariadb://192.168.1.21:3306/ti"/>
+        <property name="maximumPoolSize" value="2"/>
+        <property name="connectionTimeout" value="5000"/>
+    </bean>
+
+    <bean id="xChangeDataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close" lazy-init="true">
+        <constructor-arg name="configuration" ref="hikariConfig"/>
+        <!--<constructor-arg name="configuration" value="#{ systemProperties['DEBUG'] != null ? hikariConfigTesting : hikariConfigProduction }"/>-->
+    </bean>
+</beans>

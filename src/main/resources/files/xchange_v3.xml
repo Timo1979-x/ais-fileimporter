@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<msg xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="xchange_v3.xsd">
+    <hdr ver="3" from="a5b865ac-a075-4055-bbb8-0dd97348bf67" to="543e004d-8754-4d1d-97a9-f84d9f3bb00d"
+         date="2019-11-15T13:23:58" msg_number="12" received="45"/>
+    <!--Ошибочно введенная станция-->
+    <Info Version_App="3.1.5.0" Version_App_DB="204" Version_DB="204"/>
+    <PTI>
+        <deletions>
+            <del guid="d3938723-f808-41f2-a5e3-6abe31b6c4e7"/>
+            <del guid="9a1d1eba-e516-427b-9961-6af23cd61d66"/>
+        </deletions>
+        <changes>
+            <Doc guid="357dafeb-7e19-4bef-8c66-c434ff0e64aa" id_dso_diagn_card="96710" ds_code="999999998" dc_seria="БЧ"
+                 dc_number="487163" dateto="15.11.2019 13:21:45" method_izm="1" reg_number="5855IT-7" dateauto="2001"
+                 tc_seria="МАА" tc_number="730646" vin_is_chassi="0" vin="VF7CHRHYB39060042" id_ts_type="9"
+                 id_ts_type_engine="4" model_id="7003090" id_ts_categ="1" id_ts_use="1" id_ts_colour="538" eko_class="1"
+                 weight="1835" mileage="3" parent="ЧЕРЕПОВСКИЙ ПАВЕЛ АЛЕКСАНДРОВИЧ" dl_seria="7АВ" dl_number="136724"
+                 num_inspection="0"
+                 check="101,104,105,201,202,203,204,301,302,303,304,305,401,402,403,404,405,501,502,503,504,602,605,606,701,702,703,801,802,803,901,902,904,905,906,908,909,910,1001,1002,1003,1004,1101,1102"
+                 notes="" mismatch="1,5,7" photo="0" conclusion="2" owner_name="КУВШИННИКОВ АЛЕКСАНДР БОРИСОВИЧ"
+                 owner_type="1" owner_unp="" customer_name="" customer_type="" customer_unp="" symma_s_nds="1.00"
+                 symma_nds="0.00" blanc_repeat_date="" blanc_repeat_seria="" blanc_repeat_number=""
+                 user_name="САВЕЛЬЕВ ПАВЕЛ  АЛЕКСАНДРОВИЧ"/>
+        </changes>
+    </PTI>
+</msg>

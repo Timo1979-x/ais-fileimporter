@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<msg xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="xchange_v1.xsd">
+    <hdr ver="1" from="999999999" to="0" date="2015-09-11T10:21:00" msg_number="1" received="0"/>
+    <PTI>
+        <deletions>
+            <del guid="d3938723-f808-41f2-a5e3-6abe31b6c4e7"/>
+            <del guid="9a1d1eba-e516-427b-9961-6af23cd61d66"/>
+        </deletions>
+        <changes>
+            <Doc GUID="fb84efa3-c4cb-42ab-9a82-1733251f007b" id_dso_diagn_card="2" ds_code="678909591" dc_seria="АА"
+                 dc_number="1" dateto="19.09.2013 13:41:18" method_izm="1" reg_number="9753KP-7" dateauto="1991"
+                 tc_seria="МАА" tc_number="947768" vin_is_chassi="0" vin="WAUZZZ4AZNA031230" id_ts_type="9"
+                 id_ts_type_engine="1" id_ts_marca="4635" id_ts_categ="1" id_ts_use="1" id_ts_colour="546" eko_class="0"
+                 weight="1860" mileage="265000" parent="КРИЩИК СЕРГЕЙ ВИКТОРОВИЧ" dl_seria="КВ" dl_number="333983"
+                 num_inspection="0"
+                 check="101,104,105,201,202,203,204,301,302,303,304,305,401,402,403,404,405,501,502,503,504,601,605,606,701,702,703,801,802,803,901,902,904,905,906,908,909,910,1001,1002,1003,1004,1101,1102"
+                 notes="1115" mismatch="331" photo="1" conclusion="2" owner_name="КРИЩИК СЕРГЕЙ ВИКТОРОВИЧ"
+                 owner_type="1" owner_unp="" customer_name="" customer_type="" customer_unp="" symma_s_nds="0.1"
+                 symma_nds="0" blanc_repeat_date="" blanc_repeat_seria="" blanc_repeat_number=""
+                 user_name="Воротницкий Андрей Евгеньевич"/>
+            <Doc GUID="474d5cc5-99e3-4725-8db0-ef6fe62f5710" id_dso_diagn_card="2" ds_code="678909591" dc_seria="АА"
+                 dc_number="2" dateto="19.09.2013 13:49:51" method_izm="1" reg_number="9753KP-7" dateauto="1991"
+                 tc_seria="МАА" tc_number="947768" vin_is_chassi="0" vin="WAUZZZ4AZNA031230" id_ts_type="9"
+                 id_ts_type_engine="1" id_ts_marca="4635" id_ts_categ="1" id_ts_use="1" id_ts_colour="546" eko_class="0"
+                 weight="1860" mileage="265000" parent="КРИЩИК СЕРГЕЙ ВИКТОРОВИЧ" dl_seria="КВ" dl_number="333983"
+                 num_inspection="1" check="1000,1001,1100,1101" notes="" mismatch="" photo="0" conclusion="1"
+                 owner_name="КРИЩИК СЕРГЕЙ ВИКТОРОВИЧ" owner_type="1" owner_unp="" customer_name="" customer_type=""
+                 customer_unp="" symma_s_nds="0" symma_nds="0" blanc_repeat_date="19.09.2013 13:49:51"
+                 blanc_repeat_seria="АА" blanc_repeat_number="1" user_name="Воротницкий Андрей Евгеньевич"/>
+        </changes>
+    </PTI>
+</msg>
