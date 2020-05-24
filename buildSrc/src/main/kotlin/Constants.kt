@@ -23,6 +23,8 @@ object Versions {
 
     val JAVAX_XML_BIND = "2.3.0"
 
-    val AIS_MODEL2 = "2.0.0"
+    val AIS_MODEL2 = "2.1.0"
+
+    val AIS_COMMONS = "1.1.0"
 }
 

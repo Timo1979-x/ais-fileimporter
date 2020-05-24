@@ -228,11 +228,11 @@ public class XChangerDaoMariaDB implements XChangerDao {
 
     private void findOrInsertClient(Client c) {
         String sqlQuery;
-        if (c.getUnp() == null || c.getLegalType() == 0) {
+        if (c.getUnp() == null || c.getLegalType() == LegalTypesEnum.INDIVIDUAL) {
             sqlQuery = "SELECT id FROM ti.client c WHERE c.name=:name AND c.legal_type=:legal_type AND c.unp IS NULL LIMIT 1;";
             c.setUnp(null);
         } else {
-            sqlQuery = "SELECT id FROM ti.client c WHERE c.name=:name AND c.legal_type=:legal_type AND c.unp = :unp LIMIT 1;";
+            sqlQuery = "SELECT id FROM ti.client c WHERE c.name=:name AND c.legal_type=:legal_type AND c.unp = :unp and c.branch is null LIMIT 1;";
         }
         MapSqlParameterSource params = new MapSqlParameterSource("name", c.getName());
         params.addValue("legal_type", c.getLegalType());

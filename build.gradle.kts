@@ -31,7 +31,7 @@ plugins {
 }
 
 group = "by.gto.xchanger"
-version = "1.9.0"
+version = "1.10.0"
 
 java.sourceCompatibility = JavaVersion.VERSION_12
 java.targetCompatibility = JavaVersion.VERSION_12
@@ -48,6 +48,7 @@ repositories {
 }
 
 dependencies {
+    implementation("by.gto.ais:ais-commons:${Versions.AIS_COMMONS}")
     implementation("by.gto.ais:ais-model2:${Versions.AIS_MODEL2}") {
         exclude(group = "com.fasterxml.jackson.core")
     }
@@ -111,7 +112,9 @@ tasks.withType<JavaCompile> {
 tasks.withType<Test> {
     systemProperty("file.encoding", "UTF-8")
 }
+
 tasks.withType<Jar> {
+    getArchiveFileName().set(project.name + ".jar")
     val test by tasks.existing
     val check by tasks.existing
     val copyToLib by tasks.existing
@@ -131,7 +134,7 @@ tasks.withType<Jar> {
             writer.write("""
                 #/bin/bash
 
-                java -jar FileImporter.jar --import-belto=/home/tim/belto
+                java -jar ${project.name}.jar --import-belto=/home/tim/belto
                 """.trimIndent()
             )
         }
