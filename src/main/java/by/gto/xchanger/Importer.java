@@ -57,6 +57,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -430,7 +431,7 @@ public class Importer {
             for (String file : files) {
                 XChangeResults results1file = import1file(file, params, options);
 
-                if (results1file != null) {
+                if (!results1file.isReceiptOnly()) {
                     result.getRegNumberSet().addAll(results1file.getRegNumberSet());
                     result.getCertNumberSet().addAll(results1file.getCertNumberSet());
                     setOfSenders.add(GuidHelpers.guidFromBytes(results1file.getImportedSenderGUID()));
@@ -701,9 +702,7 @@ public class Importer {
                 log.info("Creating peer");
                 // такого партнера по репликации еще не было - создаем:
                 dao.createPeer(msgFrom, msgFormatVersion);
-                for (EntityDescriptor entityDescriptor : dbSpecificData.getEntities()) {
-                    dao.registerReferenceForPeer(msgFrom, entityDescriptor);
-                }
+                registerReferencesForPeer(msgFrom);
                 log.info("Create peer done");
             } else if (receivedMessageNumber >= msgNumber) {
                 throw new WrongMessageNumberException(
@@ -763,13 +762,28 @@ public class Importer {
         }
         if (!options.isOnlyLoadData()) {
             dao.updateRegistry(msgFrom, (int) msgSuccReceived);
+            if (Objects.equals(false, dao.isPeerActive(msgFrom))) {
+                registerReferencesForPeer(msgFrom);
+            }
             dao.updateMessageNumberInPeerTable(msgFrom, (int) msgNumber, dsCode, msgFormatVersion);
         }
 
         // если это сообщение - всего лишь квитанция, т.е. не содержит информации о сущностях
         // то возвращаем null. В этом случае вызывающая функция не будет формировать ответ отправителю,
         // чтобы не меняться бесконечно пустыми квитанциями:
-        return receiptOnly ? null : result;
+        result.setReceiptOnly(receiptOnly);
+        return result;
+    }
+
+    /**
+     * Зарегистрировать для указанного пира все записи всех отслеживаемых справочников.
+     * Нужно для свежесозданных пиров и тех, у кого статус изменился с неактивного на активный.
+     * @param peerGuid идентификатор пира.
+     */
+    private void registerReferencesForPeer(byte[] peerGuid) {
+        for (EntityDescriptor entityDescriptor : dbSpecificData.getEntities()) {
+            dao.registerReferenceForPeer(peerGuid, entityDescriptor);
+        }
     }
 
     private int insertOrUpdatePti(

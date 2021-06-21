@@ -12,6 +12,7 @@ public class XChangeResults {
     private Set<String> certNumberSet = new HashSet<>();
     private byte[] importedSenderGUID;
     private Throwable error;
+    private boolean receiptOnly = true;
 
     public Set<String> getRegNumberSet() {
         return regNumberSet;
@@ -43,5 +44,13 @@ public class XChangeResults {
 
     public void setError(Throwable error) {
         this.error = error;
+    }
+
+    public boolean isReceiptOnly() {
+        return receiptOnly;
+    }
+
+    public void setReceiptOnly(boolean receiptOnly) {
+        this.receiptOnly = receiptOnly;
     }
 }

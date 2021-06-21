@@ -384,4 +384,9 @@ public class XChangerDaoFirebird implements XChangerDao {
         Date result = jdbcTemplate.queryForObject("select s.min_allowed_exchange_date from settings s where s.id = 1", (Map) null, Date.class);
         return  Optional.ofNullable(result);
     }
+
+    @Override
+    public Boolean isPeerActive(byte[] peerId) {
+        return null;
+    }
 }

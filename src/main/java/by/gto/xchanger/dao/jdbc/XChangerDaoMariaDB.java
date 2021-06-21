@@ -71,7 +71,7 @@ public class XChangerDaoMariaDB implements XChangerDao {
             + "  IFNULL(peers.last_received_message, -1),\n"
             + "  CAST(peer_active AS int)\n"
             + "FROM ti.peers\n"
-            + "WHERE peers.id = :peerId";
+            + "WHERE peers.id = :peerId and peers.sync_system = 0";
         Map<String, Object> params = new HashMap<>();
         params.put("peerId", peerId);
         jdbcTemplate.query(sqlQuery, params,
@@ -94,7 +94,7 @@ public class XChangerDaoMariaDB implements XChangerDao {
         Map<String, Object> params = new HashMap<>();
         params.put("peer_id", peerId);
         params.put("format_version", msgFormatVersion);
-        return jdbcTemplate.update("INSERT INTO ti.peers (id, format_version) VALUES (:peer_id, :format_version)", params);
+        return jdbcTemplate.update("INSERT INTO ti.peers (id, format_version, peer_active, sync_system) VALUES (:peer_id, :format_version, true, 0)", params);
     }
 
     @Override
@@ -307,7 +307,7 @@ public class XChangerDaoMariaDB implements XChangerDao {
             + "    peers.last_received_message = :last_received_message,\n"
             + "    peers.last_received_time = NOW()\n"
             + ((dsCode != null) ? "    ,peers.ds_id = :ds_code\n" : "")
-            + "WHERE peers.id = :peer_id";
+            + "WHERE peers.id = :peer_id and peers.sync_system = 0";
         Map<String, Object> params = new HashMap<>();
         params.put("last_received_message", msgNumber);
 
@@ -330,14 +330,14 @@ public class XChangerDaoMariaDB implements XChangerDao {
             + "        WHERE changes_registry.message_number IS NULL\n"
             + "        AND changes_registry.start_date <= :date\n"
             + "        AND peers.peer_active != 0\n"
-            + "        AND peers.me = 0\n"
+            + "        AND peers.me = 0 and peers.sync_system = 0\n"
             + "        UNION\n"
             + "        SELECT\n"
             + "        peers.id\n"
             + "        FROM ti.peers\n"
             + "        LEFT JOIN ti.changes_registry\n"
             + "        ON (peers.id = changes_registry.peer_id)\n"
-            + "        WHERE peers.peer_active != 0\n"
+            + "        WHERE peers.peer_active != 0 and peers.sync_system = 0\n"
             + "        AND ((peers.last_sent_time IS NULL)\n"
             + "        OR DATE_ADD(peers.last_sent_time, INTERVAL 1 DAY) < NOW()\n"
             + "        )\n"
@@ -355,7 +355,7 @@ public class XChangerDaoMariaDB implements XChangerDao {
     public List<Integer> getMessageNumbers(byte[] peerId) {
         final List<Integer> r = new ArrayList<>();
         String sqlQuery = "SELECT COALESCE(p.last_sent_message, 0), COALESCE(p.LAST_RECEIVED_MESSAGE, 0), p.FORMAT_VERSION FROM ti.peers p\n"
-            + "WHERE id = :peer_id";
+            + "WHERE id = :peer_id and p.sync_system = 0";
         Map<String, Object> params = new HashMap<>();
         params.put("peer_id", peerId);
         jdbcTemplate.query(sqlQuery, params,
@@ -375,7 +375,7 @@ public class XChangerDaoMariaDB implements XChangerDao {
         params.put("peer_id", peerId);
         params.put("last_sent_message", lastSentMessage);
         jdbcTemplate.update(
-            "UPDATE ti.peers SET last_sent_message = :last_sent_message, last_sent_time = NOW() WHERE id = :peer_id",
+            "UPDATE ti.peers SET last_sent_message = :last_sent_message, last_sent_time = NOW() WHERE id = :peer_id and sync_system = 0",
             params);
     }
 
@@ -471,7 +471,7 @@ public class XChangerDaoMariaDB implements XChangerDao {
         Map<String, Object> params = new HashMap<>();
         params.put("days", days);
         return jdbcTemplate.update("UPDATE ti.peers SET peer_active = 0 "
-            + "WHERE peer_active = 1 AND last_received_time < DATE_ADD(now(), INTERVAL - :days DAY) AND me != 1", params);
+            + "WHERE peer_active = 1 AND last_received_time < DATE_ADD(now(), INTERVAL - :days DAY) AND me != 1 and sync_system = 0", params);
     }
 
     @Override
@@ -497,5 +497,20 @@ public class XChangerDaoMariaDB implements XChangerDao {
             });
 
         return result[0] == null ? Optional.empty() : Optional.of(new Date(result[0].getTime()));
+    }
+
+    @Override
+    public Boolean isPeerActive(byte[] peerId) {
+        final Boolean[] result = new Boolean[]{null};
+        Map<String, Object> params = new HashMap<>();
+        params.put("peer_id", peerId);
+        jdbcTemplate.query(
+                "SELECT p.peer_active FROM ti.peers p WHERE p.id = :peer_id and p.sync_system = 0;", params, rs -> {
+                    final boolean r = rs.getBoolean(1);
+                    if (!rs.wasNull()) {
+                        result[0] = r;
+                    }
+                });
+        return result[0];
     }
 }

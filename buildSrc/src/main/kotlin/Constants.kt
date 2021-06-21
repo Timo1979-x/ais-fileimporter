@@ -7,7 +7,9 @@ object Versions {
 
     val COMMONS_IO = "2.5"
 
-    val KOTLIN = "1.3.72"
+    val KOTLIN = "1.5.10"
+
+    val KOTLIN_PLUGIN = "1.3.72"
 
     val JAYBIRD = "3.0.0"
 

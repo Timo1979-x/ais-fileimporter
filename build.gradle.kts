@@ -1,33 +1,5 @@
-import java.util.Date
-
-//buildscript {
-//    repositories {
-//        maven {
-//            url =uri ("https://plugins.gradle.org/m2/")
-//        }
-//        mavenCentral()
-//        maven {
-//            url = uri("/mnt/work/timo_personal/MegaSync/repo/")
-//        }
-//        maven {
-//            url = uri("/home/tim/MEGAsync/repo/")
-//        }
-//        maven {
-//            url = uri("https://dl.bintray.com/nikit007/mvn-repo/")
-//        }
-//    }
-//    dependencies {
-//        classpath ("org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.KOTLIN}")
-//    }
-//}
-
-//plugins {
-//    kotlin("jvm")
-//}
-
 plugins {
-    java
-    kotlin("jvm") version Versions.KOTLIN
+    id("org.jetbrains.kotlin.jvm") version Versions.KOTLIN
 }
 
 group = "by.gto.xchanger"
@@ -39,9 +11,10 @@ java.targetCompatibility = JavaVersion.VERSION_12
 repositories {
     mavenCentral()
     maven {
-        url = uri("sftp://git.gto.by:22005/var/mvnroot/")
+        url = uri("sftp://git.gto.by:22002/var/mvnroot/")
         credentials {
-            username = System.getProperty("mvn.deploy.username") // systemProp.mvn.deploy.username=name in c:\Users\<user>\.gradle\gradle.properties
+            username =
+                System.getProperty("mvn.deploy.username") // systemProp.mvn.deploy.username=name in c:\Users\<user>\.gradle\gradle.properties
             password = System.getProperty("mvn.deploy.password")
         }
     }
@@ -77,7 +50,11 @@ dependencies {
         exclude(group = "org.mariadb.jdbc")
     }
     implementation("org.apache.commons:commons-compress:1.10")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.KOTLIN}")
+    // Align versions of all Kotlin components
+    implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
+
+    // Use the Kotlin JDK 8 standard library.
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     testImplementation("junit:junit:${Versions.JUNIT}")
 }
 
@@ -88,24 +65,7 @@ task<Copy>("copyToLib") {
     into("$buildDir/libs/lib")
 }
 
-task<Copy>("putVersion") {
-    description = "Заменяет версию билда в файле by/gto/xchanger/Version.java"
-    outputs.upToDateWhen { false }
-    val sourcePath = sourceSets.main.get().java.sourceDirectories.files.first().absolutePath
-    from("${sourcePath}/../java-templates")
-    into("${sourcePath}/by/gto/xchanger")
-    filter {
-        it
-                .replace("\${project.version}", "${project.version}")
-                .replace("\${project.groupId}", "${project.group}")
-                .replace("\${project.artifactId}", project.name)
-                .replace("\${buildNumber}", "${version}.${buildNumber}")
-                .replace("\${buildTime}", Date().toString())
-    }
-}
-
 tasks.withType<JavaCompile> {
-    dependsOn(tasks.named("putVersion", Copy::class.java))
     options.encoding = "UTF-8"
 }
 
@@ -114,24 +74,23 @@ tasks.withType<Test> {
 }
 
 tasks.withType<Jar> {
-    getArchiveFileName().set(project.name + ".jar")
-    val test by tasks.existing
-    val check by tasks.existing
+    archiveFileName.set(project.name + ".jar")
     val copyToLib by tasks.existing
-    dependsOn(test, check, copyToLib)
+    dependsOn(copyToLib)
 
     doFirst {
         manifest {
             attributes(mapOf("Implementation-Title" to "Gradle",
-                    "Implementation-Version" to "${archiveVersion.get()}.${buildNumber}",
-                    "Main-Class" to "by.gto.xchanger.Importer",
-                    "Class-Path" to configurations.runtimeClasspath.get().files.map { "lib/" + it.name }
-                            .sorted().joinToString(" ")))
+                "Implementation-Version" to "${archiveVersion.get()}.${buildNumber}",
+                "Main-Class" to "by.gto.xchanger.Importer",
+                "Class-Path" to configurations.runtimeClasspath.get().files.map { "lib/" + it.name }
+                    .sorted().joinToString(" ")))
         }
     }
     doLast {
         File("$buildDir/libs/import-belto.sh").writer().use { writer ->
-            writer.write("""
+            writer.write(
+                """
                 #/bin/bash
 
                 java -jar ${project.name}.jar --import-belto=/home/tim/belto

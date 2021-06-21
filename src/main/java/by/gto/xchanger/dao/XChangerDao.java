@@ -129,4 +129,10 @@ public interface XChangerDao {
     Map<Integer, Integer> getMapOurModelIdToGaiModelId();
 
     Optional<Date> getMinimumAllowedDate();
+
+    /**
+     * Проверяет, что пир активен
+     * @return null, если пир не найден. в противном случае - признак активности.
+     */
+    Boolean isPeerActive(byte[] peerId);
 }
