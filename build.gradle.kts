@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "by.gto.xchanger"
-version = "1.11.0"
+version = "1.12"
 
 java.sourceCompatibility = JavaVersion.VERSION_12
 java.targetCompatibility = JavaVersion.VERSION_12
