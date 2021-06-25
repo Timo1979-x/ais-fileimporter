@@ -7,7 +7,7 @@
     <bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig" lazy-init="true">
         <property name="username" value="xchanger"/>
         <property name="password" value="`/IAng|QInn/j^~BMyjs"/>
-        <property name="jdbcUrl" value="jdbc:mariadb://192.168.1.21:3306/ti"/>
+        <property name="jdbcUrl" value="jdbc:mariadb://192.168.198.21:3306/ti"/>
         <property name="maximumPoolSize" value="2"/>
         <property name="connectionTimeout" value="5000"/>
     </bean>
