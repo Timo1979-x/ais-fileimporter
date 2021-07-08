@@ -18,6 +18,7 @@ import by.gto.xchanger.exceptions.ProcessingErrorException;
 import by.gto.xchanger.exceptions.RootXchangeException;
 import by.gto.xchanger.exceptions.WrongMessageNumberException;
 import by.gto.xchanger.exceptions.WrongVersionException;
+import by.gto.xchanger.helpers.Commons;
 import by.gto.xchanger.model.EntityDescriptor;
 import by.gto.xchanger.model.FileInfo;
 import by.gto.xchanger.model.XChangeCachedData;
@@ -383,7 +384,7 @@ public class Importer {
                 prepare(null, params);
                 referencesLastUpdateTime = LocalDateTime.now();
             }
-            byte[] myGUID = dao.getMyGuid();
+            byte[] myGUID = Commons.OWN_GUID;
 
             params.setInputStorageSystem(inSS);
             params.setOutputStorageSystem(outSS);

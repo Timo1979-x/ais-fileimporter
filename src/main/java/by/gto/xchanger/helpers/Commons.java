@@ -1,6 +1,7 @@
 package by.gto.xchanger.helpers;
 
 import by.gto.library.entity.RegNumberParseResult;
+import by.gto.library.helpers.BlankNumberHelpers;
 import by.gto.library.helpers.GuidHelpers;
 import by.gto.xchanger.model.EntityDescriptor;
 import by.gto.xml.entities.DiagCard;
@@ -15,6 +16,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 public class Commons {
+    /**
+     * GUID центрального участника обмена.
+     */
+    public static final byte[] OWN_GUID = GuidHelpers.guidAsBytes("543E004D-8754-4D1D-97A9-F84D9F3BB00D");
     private static final BigDecimal MAX_TI_TOTAL = new BigDecimal("9999.99");
     private static final BigDecimal MAX_TI_VAT = new BigDecimal("999.99");
 
@@ -114,8 +119,18 @@ public class Commons {
 
         result.put("POSSIBLY_WRONG_CONDITION", dc.getPOSSIBLY_WRONG_CONDITION().shortValue());
         result.put("guid", GuidHelpers.guidAsBytes(UUID.fromString(dc.getGuid())));
-        result.put("DL_SERIES", StringUtils.substring(dc.getDL_SERIES(), 0, 6));
-        result.put("DL_NUMBER", dc.getDL_NUMBER());
+        String dlSeries = dc.getDL_SERIES();
+        int dlNumber = dc.getDL_NUMBER();
+        if(dlNumber == 0 || StringUtils.isBlank(dlSeries)) {
+            result.put("DL", null);
+            result.put("DL_DIGITS", null);
+        } else {
+            result.put("DL", BlankNumberHelpers.normalizeDriversLicense(
+                    StringUtils.substring(StringUtils.trim(dlSeries), 0, 5) +
+                            StringUtils.leftPad(String.valueOf(dlNumber), 7, '0')
+            ));
+            result.put("DL_DIGITS", dlNumber);
+        }
         result.put("KILOMETRAGE", dc.getKILOMETRAGE());
         result.put("WEIGHT", dc.getWEIGHT());
         result.put("MEASUREMENT_METHOD", dc.getMEASUREMENT_METHOD());

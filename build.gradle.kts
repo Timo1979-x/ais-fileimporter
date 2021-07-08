@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "by.gto.xchanger"
-version = "1.12.1"
+version = "1.13"
 
 java.sourceCompatibility = JavaVersion.VERSION_12
 java.targetCompatibility = JavaVersion.VERSION_12
@@ -43,7 +43,7 @@ dependencies {
     implementation("by.gto.library:bto-library-xml:1.5.0") {
         exclude(group = "mysql")
     }
-    implementation("by.gto.library:bto-library-common:1.5.1") {
+    implementation("by.gto.library:bto-library-common:1.8") {
         exclude(group = "log4j")
         exclude(group = "mysql")
         exclude(group = "commons-configuration")

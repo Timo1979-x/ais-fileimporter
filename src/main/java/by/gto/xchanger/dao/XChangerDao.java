@@ -14,8 +14,6 @@ public interface XChangerDao {
 
     int[] getChecksMapping();
 
-    byte[] getMyGuid();
-
     /**
      * Возвращает номер последнего успешно принятого сообщения от участника обмена.
      *

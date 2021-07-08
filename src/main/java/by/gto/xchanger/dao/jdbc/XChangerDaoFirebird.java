@@ -126,20 +126,6 @@ public class XChangerDaoFirebird implements XChangerDao {
     }
 
     @Override
-    public byte[] getMyGuid() {
-        final List<byte[]> result = new ArrayList<>();
-        jdbcTemplate.query("select first 1 peer_Id from peers where me <> 0", resultSet -> {
-            byte[] bytes = resultSet.getBytes(1);
-            result.add(bytes);
-        });
-        if (result.size() == 0) {
-            return null;
-        } else {
-            return result.get(0);
-        }
-    }
-
-    @Override
     public List<Integer> getMessageNumbers(byte[] peerId) {
         final List<Integer> r = new ArrayList<>();
         String sqlQuery = "SELECT COALESCE(peers.last_sent_message, 0), COALESCE(LAST_RECEIVED_MESSAGE, 0), FORMAT_VERSION FROM peers WHERE peer_id = :peer_id";
@@ -323,7 +309,7 @@ public class XChangerDaoFirebird implements XChangerDao {
         final List<byte[]> r = new ArrayList<>();
         String sql = "select distinct changes_registry.peer_id as idd \n"
                 + "from changes_registry left join peers on (peers.peer_id = changes_registry.peer_id) \n"
-                + "where changes_registry.MESSAGE_NUMBER is null and peers.peer_active <>0 and peers.me = 0 \n"
+                + "where changes_registry.MESSAGE_NUMBER is null and peers.peer_active <>0 \n"
                 + "union \n"
                 + "select peers.peer_id \n"
                 + "from peers \n"
@@ -367,7 +353,7 @@ public class XChangerDaoFirebird implements XChangerDao {
         LocalDateTime.now().minusDays(days);
         Map<String, Object> params = new HashMap<>();
         params.put("date", LocalDateTime.now().minusDays(Math.max(days, 1L)));
-        return jdbcTemplate.update("UPDATE peers SET peer_active = 0 WHERE peer_active = 1 AND last_received_time < :date AND me <> 1", params);
+        return jdbcTemplate.update("UPDATE peers SET peer_active = 0 WHERE peer_active = 1 AND last_received_time < :date", params);
     }
 
     @Override

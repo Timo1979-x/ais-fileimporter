@@ -51,37 +51,23 @@ public class XChangerDaoMariaDB implements XChangerDao {
     }
 
     @Override
-    public byte[] getMyGuid() {
-        final List<byte[]> result = new ArrayList<>();
-        jdbcTemplate.query("SELECT id FROM ti.peers WHERE me != 0 LIMIT 1", resultSet -> {
-            byte[] bytes = resultSet.getBytes(1);
-            result.add(bytes);
-        });
-        if (result.size() == 0) {
-            return null;
-        } else {
-            return result.get(0);
-        }
-    }
-
-    @Override
     public Integer getReceivedMessageNumber(byte[] peerId) {
         final List<Integer> r = new ArrayList<>();
         String sqlQuery = "SELECT\n"
-            + "  IFNULL(peers.last_received_message, -1),\n"
-            + "  CAST(peer_active AS int)\n"
-            + "FROM ti.peers\n"
-            + "WHERE peers.id = :peerId and peers.sync_system = 0";
+                + "  IFNULL(peers.last_received_message, -1),\n"
+                + "  CAST(peer_active AS int)\n"
+                + "FROM ti.peers\n"
+                + "WHERE peers.id = :peerId and peers.sync_system = 0";
         Map<String, Object> params = new HashMap<>();
         params.put("peerId", peerId);
         jdbcTemplate.query(sqlQuery, params,
-            resultSet -> {
-                if (resultSet.getInt(2) == 0) {
-                    r.add(-2);
-                } else {
-                    r.add(resultSet.getInt(1));
-                }
-            });
+                resultSet -> {
+                    if (resultSet.getInt(2) == 0) {
+                        r.add(-2);
+                    } else {
+                        r.add(resultSet.getInt(1));
+                    }
+                });
         if (r.size() == 0) {
             return null;
         } else {
@@ -108,60 +94,60 @@ public class XChangerDaoMariaDB implements XChangerDao {
     @Override
     public int insertOrUpdatePTI(DiagCard dc, boolean loadedByProtocol) {
         final String sql = "INSERT ti.ti (\n"
-            + "            employee_id, ds_id, vehicle_id, vehicle_type_id, model_id,\n"
-            + "            vehicle_engine_type_id, color_id, card_series, card_number, check_number,\n"
-            + "            owner_id, holder_id, reg_cert_series, reg_cert_number, conclusion,\n"
-            + "            ti_date, version, checks, reg_number1_id, reg_number2_id,\n"
-            + "            guid, possibly_wrong_conclusion, last_modified, dl_series, dl_number,\n"
-            + "            kilometrage, weight, measurement_method, ecological_class, loaded_by_protocol,\n"
-            + "            category_id, reg_number, vin, year, applying, total, vat, customer_id)\n"
-            + "        VALUES (\n"
-            + "            :employee_id, :firm_code, :vehicle_id, :IDTYPETC, :gai_model_id,\n"
-            + "            :IDTYPEENGINESTC, :IDCOLORSTC, :SERIAL, :SERIALNUMBER, :SECONDCHECK + 1,\n"
-            + "            :owner_id, :holder_id, :SPSERIAL, :SPNUMBER, :CONDITIONTC,\n"
-            + "            :DATETO, 3, :checks_packed, :reg_number1_id, 0,\n"
-            + "            :guid_bytes, :POSSIBLY_WRONG_CONDITION, NOW(), :DL_SERIES, :DL_NUMBER,\n"
-            + "            :KILOMETRAGE, :WEIGHT, :MEASUREMENT_METHOD, :ECOLOGICAL_CLASS, 1,\n"
-            + "            :CATEGORY_ID, :normalized_rn, :VIN, :DATEAUTO, :APPLYING, :total, :vat, :customer_id)\n"
-            + "        ON DUPLICATE KEY UPDATE\n"
-            + "            employee_id               = values(employee_id),\n"
-            + "            ds_id                     = values(ds_id),\n"
-            + "            vehicle_id                = values(vehicle_id),\n"
-            + "            vehicle_type_id           = values(vehicle_type_id),\n"
-            + "            model_id                  = values(model_id),\n"
-            + "            vehicle_engine_type_id    = values(vehicle_engine_type_id),\n"
-            + "            color_id                  = values(color_id),\n"
-            + "            card_series               = values(card_series),\n"
-            + "            card_number               = values(card_number),\n"
-            + "            check_number              = values(check_number),\n"
-            + "            owner_id                  = values(owner_id),\n"
-            + "            holder_id                 = values(holder_id),\n"
-            + "            reg_cert_series           = values(reg_cert_series),\n"
-            + "            reg_cert_number           = values(reg_cert_number),\n"
-            + "            conclusion                = values(conclusion),\n"
-            + "            ti_date                   = values(ti_date),\n"
-            + "            version                   = values(version),\n"
-            + "            checks                    = values(checks),\n"
-            + "            reg_number1_id            = values(reg_number1_id),\n"
-            + "            reg_number2_id            = values(reg_number1_id),\n"
-            + "            guid                      = values(guid),\n"
-            + "            possibly_wrong_conclusion = values(possibly_wrong_conclusion),\n"
-            + "            last_modified             = NOW(),\n"
-            + "            dl_series                 = values(dl_series),\n"
-            + "            dl_number                 = values(dl_number),\n"
-            + "            kilometrage               = values(kilometrage),\n"
-            + "            weight                    = values(weight),\n"
-            + "            measurement_method        = values(measurement_method),\n"
-            + "            ecological_class          = values(ecological_class),\n"
-            + "            loaded_by_protocol        = values(loaded_by_protocol),\n"
-            + "            category_id               = values(category_id),\n"
-            + "            reg_number                = values(reg_number),\n"
-            + "            vin                       = values(vin),\n"
-            + "            year                      = values(year),\n"
-            + "            applying                  = values(applying),\n"
-            + "            total                     = values(total),\n"
-            + "            vat                       = values(vat),\n"
-            + "            customer_id               = values(customer_id)";
+                + "            employee_id, ds_id, vehicle_id, vehicle_type_id, model_id,\n"
+                + "            vehicle_engine_type_id, color_id, card_series, card_number, check_number,\n"
+                + "            owner_id, holder_id, reg_cert_series, reg_cert_number, conclusion,\n"
+                + "            ti_date, version, checks, reg_number1_id, reg_number2_id,\n"
+                + "            guid, possibly_wrong_conclusion, last_modified, dl, dl_digits,\n"
+                + "            kilometrage, weight, measurement_method, ecological_class, loaded_by_protocol,\n"
+                + "            category_id, reg_number, vin, year, applying, total, vat, customer_id)\n"
+                + "        VALUES (\n"
+                + "            :employee_id, :firm_code, :vehicle_id, :IDTYPETC, :gai_model_id,\n"
+                + "            :IDTYPEENGINESTC, :IDCOLORSTC, :SERIAL, :SERIALNUMBER, :SECONDCHECK + 1,\n"
+                + "            :owner_id, :holder_id, :SPSERIAL, :SPNUMBER, :CONDITIONTC,\n"
+                + "            :DATETO, 3, :checks_packed, :reg_number1_id, 0,\n"
+                + "            :guid_bytes, :POSSIBLY_WRONG_CONDITION, NOW(), :DL, :DL_DIGITS,\n"
+                + "            :KILOMETRAGE, :WEIGHT, :MEASUREMENT_METHOD, :ECOLOGICAL_CLASS, 1,\n"
+                + "            :CATEGORY_ID, :normalized_rn, :VIN, :DATEAUTO, :APPLYING, :total, :vat, :customer_id)\n"
+                + "        ON DUPLICATE KEY UPDATE\n"
+                + "            employee_id               = values(employee_id),\n"
+                + "            ds_id                     = values(ds_id),\n"
+                + "            vehicle_id                = values(vehicle_id),\n"
+                + "            vehicle_type_id           = values(vehicle_type_id),\n"
+                + "            model_id                  = values(model_id),\n"
+                + "            vehicle_engine_type_id    = values(vehicle_engine_type_id),\n"
+                + "            color_id                  = values(color_id),\n"
+                + "            card_series               = values(card_series),\n"
+                + "            card_number               = values(card_number),\n"
+                + "            check_number              = values(check_number),\n"
+                + "            owner_id                  = values(owner_id),\n"
+                + "            holder_id                 = values(holder_id),\n"
+                + "            reg_cert_series           = values(reg_cert_series),\n"
+                + "            reg_cert_number           = values(reg_cert_number),\n"
+                + "            conclusion                = values(conclusion),\n"
+                + "            ti_date                   = values(ti_date),\n"
+                + "            version                   = values(version),\n"
+                + "            checks                    = values(checks),\n"
+                + "            reg_number1_id            = values(reg_number1_id),\n"
+                + "            reg_number2_id            = values(reg_number1_id),\n"
+                + "            guid                      = values(guid),\n"
+                + "            possibly_wrong_conclusion = values(possibly_wrong_conclusion),\n"
+                + "            last_modified             = NOW(),\n"
+                + "            dl                        = values(dl),\n"
+                + "            dl_digits                 = values(dl_digits),\n"
+                + "            kilometrage               = values(kilometrage),\n"
+                + "            weight                    = values(weight),\n"
+                + "            measurement_method        = values(measurement_method),\n"
+                + "            ecological_class          = values(ecological_class),\n"
+                + "            loaded_by_protocol        = values(loaded_by_protocol),\n"
+                + "            category_id               = values(category_id),\n"
+                + "            reg_number                = values(reg_number),\n"
+                + "            vin                       = values(vin),\n"
+                + "            year                      = values(year),\n"
+                + "            applying                  = values(applying),\n"
+                + "            total                     = values(total),\n"
+                + "            vat                       = values(vat),\n"
+                + "            customer_id               = values(customer_id)";
 
 
         int employeeId = findOrInsertEmployee(dc.getEMPLOYEE());
@@ -171,7 +157,7 @@ public class XChangerDaoMariaDB implements XChangerDao {
 
         RegNumberParseResult regNumberParseResult = dc.getRegNumberParseResult();
         int regNumberId = findOrInsertRegNumber(regNumberParseResult.getLetters(),
-            regNumberParseResult.getDigits(), regNumberParseResult.getLength());
+                regNumberParseResult.getDigits(), regNumberParseResult.getLength());
 
         dc.setEmployeeId(employeeId);
         dc.setVehicleId(vehicleId);
@@ -212,17 +198,17 @@ public class XChangerDaoMariaDB implements XChangerDao {
         params.addValue("length", length);
         int[] ids = {-1};
         jdbcTemplate.query(sqlQuery, params,
-            resultSet -> {
-                ids[0] = resultSet.getInt(1);
-            });
+                resultSet -> {
+                    ids[0] = resultSet.getInt(1);
+                });
         if (ids[0] != -1) {
             return ids[0];
         }
 
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(
-            "INSERT INTO ti.regnumber (letters, digits, len) VALUES (:letters, :digits, :length)",
-            params, keyHolder);
+                "INSERT INTO ti.regnumber (letters, digits, len) VALUES (:letters, :digits, :length)",
+                params, keyHolder);
         return keyHolder.getKey().intValue();
     }
 
@@ -240,9 +226,9 @@ public class XChangerDaoMariaDB implements XChangerDao {
 
         int[] ids = {-1};
         jdbcTemplate.query(sqlQuery, params,
-            resultSet -> {
-                ids[0] = resultSet.getInt(1);
-            });
+                resultSet -> {
+                    ids[0] = resultSet.getInt(1);
+                });
         if (ids[0] != -1) {
             c.setId(ids[0]);
             return;
@@ -255,22 +241,22 @@ public class XChangerDaoMariaDB implements XChangerDao {
 
     private int findOrInsertVehicle(DiagCard dc) {
         String sqlQuery =
-            "SELECT id FROM ti.vehicle v WHERE v.year=:year AND v.chassis_number=:chassis_number AND v.vin_reversed=:vin_reversed LIMIT 1;";
+                "SELECT id FROM ti.vehicle v WHERE v.year=:year AND v.chassis_number=:chassis_number AND v.vin_reversed=:vin_reversed LIMIT 1;";
         MapSqlParameterSource params = new MapSqlParameterSource("year", dc.getDATEAUTO());
         params.addValue("chassis_number", StringUtils.isEmpty(dc.getSHNUMBER()) ? "" : StringUtils.substring(dc.getSHNUMBER(), 0, 40));
         params.addValue("vin_reversed", StringUtils.substring(dc.getREVERSEVIN(), 0, 18));
         int[] ids = {-1};
         jdbcTemplate.query(sqlQuery, params,
-            resultSet -> {
-                ids[0] = resultSet.getInt(1);
-            });
+                resultSet -> {
+                    ids[0] = resultSet.getInt(1);
+                });
         if (ids[0] != -1) {
             return ids[0];
         }
 
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(
-            "INSERT INTO ti.vehicle (`year`, chassis_number, vin_reversed) VALUES (:year, :chassis_number, :vin_reversed)", params, keyHolder);
+                "INSERT INTO ti.vehicle (`year`, chassis_number, vin_reversed) VALUES (:year, :chassis_number, :vin_reversed)", params, keyHolder);
         return keyHolder.getKey().intValue();
     }
 
@@ -279,9 +265,9 @@ public class XChangerDaoMariaDB implements XChangerDao {
         MapSqlParameterSource params = new MapSqlParameterSource("name", employee);
         int[] ids = {-1};
         jdbcTemplate.query(sqlQuery, params,
-            resultSet -> {
-                ids[0] = resultSet.getInt(1);
-            });
+                resultSet -> {
+                    ids[0] = resultSet.getInt(1);
+                });
         if (ids[0] != -1) {
             return ids[0];
         }
@@ -302,12 +288,12 @@ public class XChangerDaoMariaDB implements XChangerDao {
     @Override
     public int updateMessageNumberInPeerTable(byte[] peerId, int msgNumber, Long dsCode, int msgFormatVersion) {
         final String sql = "UPDATE ti.peers\n"
-            + "SET peers.peer_active = 1,\n"
-            + "    peers.format_version = :msg_format_version,\n"
-            + "    peers.last_received_message = :last_received_message,\n"
-            + "    peers.last_received_time = NOW()\n"
-            + ((dsCode != null) ? "    ,peers.ds_id = :ds_code\n" : "")
-            + "WHERE peers.id = :peer_id and peers.sync_system = 0";
+                + "SET peers.peer_active = 1,\n"
+                + "    peers.format_version = :msg_format_version,\n"
+                + "    peers.last_received_message = :last_received_message,\n"
+                + "    peers.last_received_time = NOW()\n"
+                + ((dsCode != null) ? "    ,peers.ds_id = :ds_code\n" : "")
+                + "WHERE peers.id = :peer_id and peers.sync_system = 0";
         Map<String, Object> params = new HashMap<>();
         params.put("last_received_message", msgNumber);
 
@@ -323,26 +309,26 @@ public class XChangerDaoMariaDB implements XChangerDao {
     public List<byte[]> findAdditionalPeers(Date date) {
         final List<byte[]> r = new ArrayList<>();
         String sql = "SELECT DISTINCT\n"
-            + "        changes_registry.peer_id AS idd\n"
-            + "        FROM ti.changes_registry\n"
-            + "        LEFT JOIN ti.peers\n"
-            + "        ON (peers.id = changes_registry.peer_id)\n"
-            + "        WHERE changes_registry.message_number IS NULL\n"
-            + "        AND changes_registry.start_date <= :date\n"
-            + "        AND peers.peer_active != 0\n"
-            + "        AND peers.me = 0 and peers.sync_system = 0\n"
-            + "        UNION\n"
-            + "        SELECT\n"
-            + "        peers.id\n"
-            + "        FROM ti.peers\n"
-            + "        LEFT JOIN ti.changes_registry\n"
-            + "        ON (peers.id = changes_registry.peer_id)\n"
-            + "        WHERE peers.peer_active != 0 and peers.sync_system = 0\n"
-            + "        AND ((peers.last_sent_time IS NULL)\n"
-            + "        OR DATE_ADD(peers.last_sent_time, INTERVAL 1 DAY) < NOW()\n"
-            + "        )\n"
-            + "        GROUP BY peers.id\n"
-            + "        HAVING COUNT(changes_registry.peer_id) > 0";
+                + "        changes_registry.peer_id AS idd\n"
+                + "        FROM ti.changes_registry\n"
+                + "        LEFT JOIN ti.peers\n"
+                + "        ON (peers.id = changes_registry.peer_id)\n"
+                + "        WHERE changes_registry.message_number IS NULL\n"
+                + "        AND changes_registry.start_date <= :date\n"
+                + "        AND peers.peer_active != 0\n"
+                + "        AND peers.sync_system = 0\n"
+                + "        UNION\n"
+                + "        SELECT\n"
+                + "        peers.id\n"
+                + "        FROM ti.peers\n"
+                + "        LEFT JOIN ti.changes_registry\n"
+                + "        ON (peers.id = changes_registry.peer_id)\n"
+                + "        WHERE peers.peer_active != 0 and peers.sync_system = 0\n"
+                + "        AND ((peers.last_sent_time IS NULL)\n"
+                + "        OR DATE_ADD(peers.last_sent_time, INTERVAL 1 DAY) < NOW()\n"
+                + "        )\n"
+                + "        GROUP BY peers.id\n"
+                + "        HAVING COUNT(changes_registry.peer_id) > 0";
         Map<String, Object> params = new HashMap<>();
         params.put("date", date);
         jdbcTemplate.query(sql, params, resultSet -> {
@@ -355,17 +341,17 @@ public class XChangerDaoMariaDB implements XChangerDao {
     public List<Integer> getMessageNumbers(byte[] peerId) {
         final List<Integer> r = new ArrayList<>();
         String sqlQuery = "SELECT COALESCE(p.last_sent_message, 0), COALESCE(p.LAST_RECEIVED_MESSAGE, 0), p.FORMAT_VERSION FROM ti.peers p\n"
-            + "WHERE id = :peer_id and p.sync_system = 0";
+                + "WHERE id = :peer_id and p.sync_system = 0";
         Map<String, Object> params = new HashMap<>();
         params.put("peer_id", peerId);
         jdbcTemplate.query(sqlQuery, params,
-            resultSet -> {
-                if (r.size() == 0) {
-                    r.add(resultSet.getInt(1));
-                    r.add(resultSet.getInt(2));
-                    r.add(resultSet.getInt(3));
-                }
-            });
+                resultSet -> {
+                    if (r.size() == 0) {
+                        r.add(resultSet.getInt(1));
+                        r.add(resultSet.getInt(2));
+                        r.add(resultSet.getInt(3));
+                    }
+                });
         return r;
     }
 
@@ -375,8 +361,8 @@ public class XChangerDaoMariaDB implements XChangerDao {
         params.put("peer_id", peerId);
         params.put("last_sent_message", lastSentMessage);
         jdbcTemplate.update(
-            "UPDATE ti.peers SET last_sent_message = :last_sent_message, last_sent_time = NOW() WHERE id = :peer_id and sync_system = 0",
-            params);
+                "UPDATE ti.peers SET last_sent_message = :last_sent_message, last_sent_time = NOW() WHERE id = :peer_id and sync_system = 0",
+                params);
     }
 
     @Override
@@ -413,10 +399,10 @@ public class XChangerDaoMariaDB implements XChangerDao {
         params.put("message_number", msgNumber);
         params.put("export_date", exportDate);
         jdbcTemplate.update(
-            "UPDATE ti.changes_registry "
-                + "SET message_number = :message_number "
-                + "WHERE peer_id = :peer_id AND message_number IS NULL and start_date <= :export_date",
-            params);
+                "UPDATE ti.changes_registry "
+                        + "SET message_number = :message_number "
+                        + "WHERE peer_id = :peer_id AND message_number IS NULL and start_date <= :export_date",
+                params);
     }
 
     @Override
@@ -427,17 +413,17 @@ public class XChangerDaoMariaDB implements XChangerDao {
 
         jdbcTemplate.update("DELETE FROM ti.changes_registry WHERE `name` = :entity_name AND peer_id = :peer_id", params);
         String query = String.format("INSERT INTO changes_registry (peer_id, name, entity_id_int32, deletion)\n"
-                + "  SELECT :peer_id, :entity_name, %1$s.%2$s, 0 from %1$s where !%1$s.not_for_export",
-            entityDescriptor.getTableName(), entityDescriptor.getIdFieldName());
+                        + "  SELECT :peer_id, :entity_name, %1$s.%2$s, 0 from %1$s where !%1$s.not_for_export",
+                entityDescriptor.getTableName(), entityDescriptor.getIdFieldName());
         jdbcTemplate.update(query, params);
 
 
         if ("DS".equals(entityDescriptor.getEntityName())) {
             String q = "INSERT INTO ti.changes_registry (peer_id, `name`, entity_id_int32, deletion, start_date)\n"
-                + "      SELECT :peer_id, :entity_name, ds.id, 0, dsi.date1\n"
-                + "        from ti.ds ds\n"
-                + "        INNER JOIN ti.ds_info dsi ON (dsi.ds_id=ds.id AND dsi.date1 > now())\n"
-                + "      WHERE !ds.not_for_export;";
+                    + "      SELECT :peer_id, :entity_name, ds.id, 0, dsi.date1\n"
+                    + "        from ti.ds ds\n"
+                    + "        INNER JOIN ti.ds_info dsi ON (dsi.ds_id=ds.id AND dsi.date1 > now())\n"
+                    + "      WHERE !ds.not_for_export;";
             jdbcTemplate.update(q, params);
         }
     }
@@ -469,9 +455,12 @@ public class XChangerDaoMariaDB implements XChangerDao {
     @Override
     public int inactivateOldPeers(long days) {
         Map<String, Object> params = new HashMap<>();
-        params.put("days", days);
-        return jdbcTemplate.update("UPDATE ti.peers SET peer_active = 0 "
-            + "WHERE peer_active = 1 AND last_received_time < DATE_ADD(now(), INTERVAL - :days DAY) AND me != 1 and sync_system = 0", params);
+        params.put("date", new Date(System.currentTimeMillis() - days * 24L * 60L * 60L * 1000L));
+        jdbcTemplate.update("DELETE FROM ti.changes_registry WHERE peer_id IN (" +
+                "SELECT id FROM ti.peers " +
+                "WHERE peer_active = 1 AND last_received_time < :date and sync_system = 0)", params);
+        return jdbcTemplate.update("UPDATE ti.peers SET peer_active = 0 " +
+                "WHERE peer_active = 1 AND last_received_time < :date and sync_system = 0", params);
     }
 
     @Override
@@ -488,13 +477,13 @@ public class XChangerDaoMariaDB implements XChangerDao {
         final Date[] result = new Date[]{null};
 
         jdbcTemplate.query(
-            "SELECT s.min_allowed_exchange_date FROM ti.settings s WHERE s.application IN "
-                + "('*default*', 'FileImporter.jar') ORDER BY s.application;", rs -> {
-                final java.sql.Date date = rs.getDate(1);
-                if (date != null) {
-                    result[0] = date;
-                }
-            });
+                "SELECT s.min_allowed_exchange_date FROM ti.settings s WHERE s.application IN "
+                        + "('*default*', 'FileImporter.jar') ORDER BY s.application;", rs -> {
+                    final java.sql.Date date = rs.getDate(1);
+                    if (date != null) {
+                        result[0] = date;
+                    }
+                });
 
         return result[0] == null ? Optional.empty() : Optional.of(new Date(result[0].getTime()));
     }
