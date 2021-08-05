@@ -328,7 +328,8 @@ public class Importer {
                         log.error("Importing of PTI with guid 00000000-0000-0000-0000-000000000000 is not allowed");
                         continue;
                     }
-                    int r = insertOrUpdatePti(doc, false, cachedData, false);
+                    // TODO: Специально внёс синтаксическую ошибку. Тут надо разобраться с параметром useGaiModelId:
+                    uint r = insertOrUpdatePti(doc, false, cachedData, false);
 
                     if (r == 0) {
                         log.error("Error inserting or updating record guid = " + doc.getGuid());
