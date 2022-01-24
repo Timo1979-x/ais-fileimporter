@@ -14,7 +14,7 @@ object Versions {
 
     const val HIKARICP = "2.4.3"
 
-    const val MARIADB = "1.6.0"
+    const val MARIADB = "2.4.0"
 
     const val JUNIT = "4.12"
 
